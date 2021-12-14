@@ -7,6 +7,8 @@ Integrantes: GRUPO 5
 
 Orden de ejecución sugerido:
 
+Se destaca que Ahsoka y Thrawn se ejecutan con comando make distinto
+
 (Se debe abrir una terminal distinta para la ejecución de cada entidad,
 independiente de que algunas se encuentre en la misma VM )
 
