@@ -35,6 +35,10 @@ type PlanetVector struct {
 	VectorReloj []int32
 }
 
+func arrayToString(a []int32, delim string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+}
+
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -110,23 +114,27 @@ func actualizar_archivo_planeta(planeta string, ciudad string, comando string) {
 
 //Función para comprobar que existe una ciudad. Retorna la cantidad de soldados si existe, de caso contrario retorna -1
 func leer_archivo_planeta(planeta string, ciudad string) int {
-	arch := planeta + ".txt"
 	soldados := -1
-
-	input, err := ioutil.ReadFile(arch)
+	arch := planeta + ".txt"
+	file, err := os.Open(arch)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	// optionally, resize scanner's capacity for lines over 64K, see next example
+	for scanner.Scan() {
+		linea_actual := strings.Split(scanner.Text(), " ")
+		//Ciudades = append(Ciudades, linea_actual[1])
+		sold, _ := strconv.Atoi(linea_actual[2])
+		soldados = sold
 	}
 
-	lines := strings.Split(string(input), "\n")
-
-	for _, line := range lines {
-		if strings.Contains(line, ciudad) {
-			str := strings.Split(line, " ")
-			sold, _ := strconv.Atoi(str[len(str)-1])
-			soldados = sold
-		}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
 	}
+
 	return soldados
 }
 
@@ -172,15 +180,14 @@ func abrir_escribir_archivo(planeta string, ciudad string, soldados int32) {
 //Servicios Fulcrum Central - Fulcrum
 //rpc GetPlanetas(SolicitudDominante) returns (RetornarPlanetas)
 func (s *NodoDominante_NodoServer) GetPlanetas(ctx context.Context, in *pb.SolicitudDominante) (*pb.RetornarPlanetas, error) {
-	var Retorno []*pb.PlanetVector
+	var planetines []string
+	var relojines []string
 	for i := 0; i < len(Planetas_Vectores); i++ {
-		var Valores *pb.PlanetVector
-		Valores.Planeta = Planetas_Vectores[i].Planeta
-		Valores.VectorReloj = Planetas_Vectores[i].VectorReloj
-		Retorno = append(Retorno, Valores)
+		planetines = append(planetines, Planetas_Vectores[i].Planeta)
+		relojines = append(relojines, arrayToString(Planetas_Vectores[i].VectorReloj, ","))
 	}
 
-	return &pb.RetornarPlanetas{Vectores_Planetas: Retorno}, nil
+	return &pb.RetornarPlanetas{Nombresplanetas: planetines, Relojes: relojines}, nil
 }
 
 func (s *NodoDominante_NodoServer) GetCiudades(ctx context.Context, in *pb.SolicitudDominante) (*pb.RetornarCiudades, error) {

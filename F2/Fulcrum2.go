@@ -183,12 +183,11 @@ func (s *NodoDominante_NodoServer) GetPlanetas(ctx context.Context, in *pb.Solic
 	var planetines []string
 	var relojines []string
 	for i := 0; i < len(Planetas_Vectores); i++ {
-		var Valores *pb.PlanetVector
 		planetines = append(planetines, Planetas_Vectores[i].Planeta)
-		relojines = append(relojines, Planetas_Vectores[i].VectorReloj)
+		relojines = append(relojines, arrayToString(Planetas_Vectores[i].VectorReloj, ","))
 	}
 
-	return &pb.RetornarPlanetas{Planetas: planetines, Relojes: relojines}, nil
+	return &pb.RetornarPlanetas{Nombresplanetas: planetines, Relojes: relojines}, nil
 }
 
 func (s *NodoDominante_NodoServer) GetCiudades(ctx context.Context, in *pb.SolicitudDominante) (*pb.RetornarCiudades, error) {

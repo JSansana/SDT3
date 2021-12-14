@@ -132,7 +132,7 @@ func ObtenerPlanetas_Fulcrum(direccion string) []PlanetVector {
 		var aux []int32
 		txt := strings.Split(Relojines[i], ",")
 		for j := 0; j < len(txt); j++ {
-			Numero, err := strconv.Atoi(txt[j])
+			Numero, _ := strconv.Atoi(txt[j])
 			aux = append(aux, int32(Numero))
 		}
 		Retorno = append(Retorno, PlanetVector{Planeta: Planetines[i], VectorReloj: aux})
