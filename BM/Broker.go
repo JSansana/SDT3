@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/JSansana/SD-T3/proto"
+	pb "github.com/JSansana/SDT3/proto"
 	"google.golang.org/grpc"
 )
 

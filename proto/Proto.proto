@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-option go_package = "github.com/JSansana/SD-T3/proto";
+option go_package = "github.com/JSansana/SDT3/proto";
 //Mensaje de informante para todos los comandos y para enviar vector
 //  idMensaje = 1 : Addcity - (nombre_planeta,  nombre_ciudad, [nuevo_valor])
 //  idMensaje = 2 : UpdateName - (nombre_planeta, nombre_ciudad, nuevo_valor)

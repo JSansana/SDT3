@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/JSansana/SD-T3/proto"
+	pb "github.com/JSansana/SDT3/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
