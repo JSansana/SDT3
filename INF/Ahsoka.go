@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	address = "localhost:50051"
+	address = "dist22:50051"
 )
 
 func arrayToString(a []int32, delim string) string {

@@ -265,7 +265,7 @@ func (s *Mos_FulcrumServer) GetSoldados(ctx context.Context, in *pb.Solicitud) (
 	}
 
 	soldiers := leer_archivo_planeta(planetin, ciudadin)
-	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "localhost:50062"}, nil
+	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "dist22:50062"}, nil
 
 }
 

@@ -228,7 +228,7 @@ func (s *NodoDominante_NodoServer) AgregarCiudad(ctx context.Context, in *pb.Mes
 
 	if booleano {
 		crear_archivo_planeta(planetin, ciudadin, soldadines)
-		aux := []int32{-1,-1,-1}
+		aux := []int32{-1, -1, -1}
 		Planetas_Vectores = append(Planetas_Vectores, PlanetVector{Planeta: planetin, VectorReloj: aux})
 	} else {
 		abrir_escribir_archivo(planetin, ciudadin, soldadines)
@@ -265,7 +265,7 @@ func (s *Mos_FulcrumServer) GetSoldados(ctx context.Context, in *pb.Solicitud) (
 	}
 
 	soldiers := leer_archivo_planeta(planetin, ciudadin)
-	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "localhost:50063"}, nil
+	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "dist23:50063"}, nil
 
 }
 
