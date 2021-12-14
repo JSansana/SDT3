@@ -191,9 +191,12 @@ func Consistencia_Eventual() {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
 					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("localhost:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
 					crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
-					for c := 1; c < len(Ciudades_Fulcrum2); c++ {
-						abrir_escribir_archivo(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[c], Soldados_Fulcrum2[c])
+					if len(Ciudades_Fulcrum2) > 1 {
+						for c := 1; c < len(Ciudades_Fulcrum2); c++ {
+							abrir_escribir_archivo(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[c], Soldados_Fulcrum2[c])
+						}
 					}
+
 				}
 			}
 		}
@@ -228,8 +231,10 @@ func Consistencia_Eventual() {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
 					crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
-					for c := 1; c < len(Ciudades_Fulcrum3); c++ {
-						abrir_escribir_archivo(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[c], Soldados_Fulcrum3[c])
+					if len(Ciudades_Fulcrum3) > 1 {
+						for c := 1; c < len(Ciudades_Fulcrum3); c++ {
+							abrir_escribir_archivo(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[c], Soldados_Fulcrum3[c])
+						}
 					}
 				}
 			}
