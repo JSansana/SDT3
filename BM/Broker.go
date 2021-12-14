@@ -18,9 +18,9 @@ const (
 	PortInformante = ":50051"
 	PortLeia       = ":50052"
 
-	AdressFulcrum1 = "dist24:50061"
-	AdressFulcrum2 = "dist24:50062"
-	AdressFulcrum3 = "dist24:50063"
+	AdressFulcrum1 = "dist21:50061"
+	AdressFulcrum2 = "dist22:50062"
+	AdressFulcrum3 = "dist23:50063"
 )
 
 type LeiaToMosServer struct {
@@ -113,23 +113,24 @@ func (s *InfoToMosServer) AskAdress(ctx context.Context, in *pb.Reloj) (*pb.Resp
 	if vectorInformante[0] != -1 && !Merge {
 		if Slices_MayorOIgual(vectorInformante, vector1) == true {
 
-			return &pb.RespuestaMos{Direccion: "dist24:50081"}, nil
+			return &pb.RespuestaMos{Direccion: "dist21:50081"}, nil
 
 		} else if Slices_MayorOIgual(vectorInformante, vector2) == true {
 
-			return &pb.RespuestaMos{Direccion: "dist24:50082"}, nil
+			return &pb.RespuestaMos{Direccion: "dist22:50082"}, nil
 
 		} else if Slices_MayorOIgual(vectorInformante, vector3) == true {
 
-			return &pb.RespuestaMos{Direccion: "dist24:50083"}, nil
+			return &pb.RespuestaMos{Direccion: "dist23:50083"}, nil
 		}
 
 	}
 	rand.Seed(time.Now().UnixNano())
-	min := 50081
-	max := 50083
-	var numero int = int(rand.Intn(max-min+1) + min)
-	dir := "dist24:" + strconv.Itoa(numero)
+	min := 1
+	max := 3
+	var numero int32 = int32(rand.Intn(max-min+1) + min)
+
+	dir := "dist2" + strconv.Itoa(int(numero)) + ":5008" + strconv.Itoa(int(numero))
 	return &pb.RespuestaMos{Direccion: dir}, nil
 }
 
@@ -153,10 +154,11 @@ func (s *LeiaToMosServer) GetNumberRebelds(ctx context.Context, in *pb.MessageLe
 	fmt.Println("Merge: ", Merge)
 	if vectorLeia[0] == -1 || Merge {
 		rand.Seed(time.Now().UnixNano())
-		min := 50061
-		max := 50063
+		min := 1
+		max := 3
 		var numero int32 = int32(rand.Intn(max-min+1) + min)
-		dir := "dist24:" + strconv.Itoa(int(numero))
+
+		dir := "dist2" + strconv.Itoa(int(numero)) + ":5006" + strconv.Itoa(int(numero))
 		fmt.Println("dir: ", dir)
 		fmt.Println("direccion 1: ", direccion1)
 		fmt.Println("direccion 2: ", direccion2)

@@ -19,8 +19,8 @@ import (
 const (
 	puertoMos        = ":50061"
 	puertoInformante = ":50081"
-	addressFulcrum2  = "dist21:50072"
-	addressFulcrum3  = "dist21:50073"
+	addressFulcrum2  = "dist22:50072"
+	addressFulcrum3  = "dist23:50073"
 )
 
 type InfoTo_FulcrumServer struct {
@@ -173,15 +173,15 @@ func Consistencia_Eventual() {
 	for {
 		time.Sleep(120 * time.Second)
 		fmt.Println("Pasaron 2 minutos, se realiza merge entre replicas")
-		Planetas_Vectores_Fulcrum2 := ObtenerPlanetas_Fulcrum("dist21:50072")
-		Planetas_Vectores_Fulcrum3 := ObtenerPlanetas_Fulcrum("dist21:50073")
+		Planetas_Vectores_Fulcrum2 := ObtenerPlanetas_Fulcrum("dist22:50072")
+		Planetas_Vectores_Fulcrum3 := ObtenerPlanetas_Fulcrum("dist23:50073")
 		//Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072")
 		//Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073")
 		if len(Planetas_Vectores) == 0 {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum2); j++ {
 				fmt.Println("Planeta en Fulcrum2: ", Planetas_Vectores_Fulcrum2[j].Planeta)
 				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
-				Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
+				Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist22:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
 				fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
 				fmt.Println("---------------------------------------------")
 				if len(Ciudades_Fulcrum2) > 0 {
@@ -205,7 +205,7 @@ func Consistencia_Eventual() {
 					}
 					//Se solicitan las ciudades del fulcrum central y del fulcrum 2 para hacer un merge entre ellas
 					Ciudades_Fulcrum1, _ := ObtenerCiudades_Central(Planetas_Vectores[i].Planeta)
-					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores[i].Planeta)
+					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist22:50072", Planetas_Vectores[i].Planeta)
 					if len(Ciudades_Fulcrum2) > 0 {
 						fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
 						fmt.Println("---------------------------------------------")
@@ -228,7 +228,7 @@ func Consistencia_Eventual() {
 				} else { // Si el planeta no existe en fulcrum 1, pero si en fulcrum 2, entonces se crea el archivo y se agregan las ciudades
 
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
-					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
+					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist22:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
 					fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
 					fmt.Println("---------------------------------------------")
 					if len(Ciudades_Fulcrum2) > 0 {
@@ -247,7 +247,7 @@ func Consistencia_Eventual() {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum3); j++ {
 				fmt.Println("Planeta en Fulcrum3: ", Planetas_Vectores_Fulcrum3[j].Planeta)
 				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
-				Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
+				Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist23:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
 				fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
 				fmt.Println("---------------------------------------------")
 				if len(Ciudades_Fulcrum3) > 0 {
@@ -270,7 +270,7 @@ func Consistencia_Eventual() {
 						}
 					}
 					Ciudades_Fulcrum1, _ := ObtenerCiudades_Central(Planetas_Vectores[i].Planeta)
-					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores[i].Planeta)
+					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist23:50073", Planetas_Vectores[i].Planeta)
 					if len(Ciudades_Fulcrum3) > 0 {
 						fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
 						fmt.Println("---------------------------------------------")
@@ -292,7 +292,7 @@ func Consistencia_Eventual() {
 					}
 				} else {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
-					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
+					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist23:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
 					fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
 					fmt.Println("---------------------------------------------")
 					if len(Ciudades_Fulcrum3) > 0 {
@@ -312,13 +312,13 @@ func Consistencia_Eventual() {
 			fmt.Println(Planetas_Vectores[i].Planeta, Ciudades_Fulcrum)
 			for j := 0; j < len(Ciudades_Fulcrum); j++ {
 
-				AgregarCiudades("dist21:50072", Planetas_Vectores[i].Planeta, Ciudades_Fulcrum[j], Soldados_Fulcrum[j])
-				AgregarCiudades("dist21:50073", Planetas_Vectores[i].Planeta, Ciudades_Fulcrum[j], Soldados_Fulcrum[j])
+				AgregarCiudades("dist22:50072", Planetas_Vectores[i].Planeta, Ciudades_Fulcrum[j], Soldados_Fulcrum[j])
+				AgregarCiudades("dist23:50073", Planetas_Vectores[i].Planeta, Ciudades_Fulcrum[j], Soldados_Fulcrum[j])
 
 			}
 
-			ModificarVector_Fulcrum("dist21:50072", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
-			ModificarVector_Fulcrum("dist21:50073", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
+			ModificarVector_Fulcrum("dist22:50072", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
+			ModificarVector_Fulcrum("dist23:50073", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
 		}
 		fmt.Println("Merge finalizado, se relizará otro en 2 minutos.")
 		fmt.Println("---------------------------------------------")

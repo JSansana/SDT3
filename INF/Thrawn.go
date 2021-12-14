@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	address = "dist23:50051"
+	address = "dist24:50051"
 )
 
 func arrayToString(a []int32, delim string) string {
