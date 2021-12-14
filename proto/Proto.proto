@@ -1,0 +1,101 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "github.com/JSansana/SD-T3/proto";
+//Mensaje de informante para todos los comandos y para enviar vector
+//  idMensaje = 1 : Addcity - (nombre_planeta,  nombre_ciudad, [nuevo_valor])
+//  idMensaje = 2 : UpdateName - (nombre_planeta, nombre_ciudad, nuevo_valor)
+//  idMensaje = 3 : UpdateNumber - (nombre_planeta, nombre_ciudad, nuevo_valor)
+//  idMensaje = 4 : DeleteCity - (nombre_planeta, nombre_ciudad)
+//  idMensaje = 5 : Leia
+message MessageINF{
+    string planeta = 1;
+    string ciudad = 2;
+    string newcity = 3;
+    int32 soldados = 4;
+
+}
+message MessageLeia{
+    string planeta = 1;
+    string ciudad = 2;
+    repeated int32 vector = 3;
+}
+
+
+//Respuesta que recibe Leia desde Fulcrum
+message LeiaResponse{
+    int32 soldados = 1;
+    repeated int32 vector = 2;
+    string direccion = 3;
+}
+
+//El informante recibe el address del broker
+message RespuestaMos{
+    string direccion = 1;
+}
+
+message Solicitud{
+    string planeta = 1;
+    string ciudad = 2;
+
+}
+
+message Reloj{
+    repeated int32 vector = 1;
+    string planeta = 2;
+}
+
+//Casos 
+//  SolicitudLider = 1 -> pide planetas
+//  SolicitudLider = 2 -> pide ciudades
+message SolicitudDominante{
+    int32 solicitud = 1;
+    string planeta = 2;
+}
+
+message RetornarPlanetas{
+    repeated string nombresplanetas = 1;
+    repeated string relojes = 2;
+}
+
+message RetornarCiudades{
+    repeated string ciudades = 1;
+    repeated int32 soldados = 2;
+}
+
+message VectorNuevo{
+    repeated int32 NewVector = 1;
+    string planeta = 2;
+}
+
+
+service NodoDominante_Nodo{
+
+    rpc GetPlanetas(SolicitudDominante) returns (RetornarPlanetas){}
+    //CUANDO TERMINE GETCIUDADES DEBE VACIARSE EL TEXTO DE ESE PLANETA
+    rpc GetCiudades(SolicitudDominante) returns (RetornarCiudades){}
+    rpc AgregarCiudad(MessageINF) returns (RespuestaMos){}
+    rpc ModificarVector(VectorNuevo) returns (RespuestaMos){}
+}
+
+
+service Mos_Fulcrum{
+    rpc GetSoldados(Solicitud) returns (LeiaResponse){}
+    rpc GetVector(Solicitud) returns (Reloj){}
+}
+
+service Info_to_mos{
+    rpc AskAdress(Reloj) returns (RespuestaMos){}
+
+}
+
+service Leia_to_mos{
+    rpc GetNumberRebelds(MessageLeia) returns (LeiaResponse){}
+}
+
+service Info_to_Fulcrum{
+    rpc AddCity(MessageINF) returns (Reloj) {}
+    rpc UpdateName(MessageINF) returns (Reloj) {}
+    rpc UpdateNumber(MessageINF) returns (Reloj) {}
+    rpc DeleteCity(MessageINF) returns (Reloj) {}
+}
