@@ -168,7 +168,8 @@ func Consistencia_Eventual() {
 	//		Arreglo de ciudades
 	//Soldados fulcrum
 	//		Arreglo de numero
-	fmt.Println("Empieza la consistencia eventual")
+	fmt.Println("Consistencia eventual: Merge cada dos minutos")
+	fmt.Println("---------------------------------------------")
 	for {
 		time.Sleep(120 * time.Second)
 		fmt.Println("Pasaron 2 minutos, se realiza merge entre replicas")
@@ -178,9 +179,11 @@ func Consistencia_Eventual() {
 		//Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073")
 		if len(Planetas_Vectores) == 0 {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum2); j++ {
+				fmt.Println("Planeta en Fulcrum2: ", Planetas_Vectores_Fulcrum2[j].Planeta)
 				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
 				Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
-				fmt.Println("Datos: ", Ciudades_Fulcrum2, Soldados_Fulcrum2)
+				fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
+				fmt.Println("---------------------------------------------")
 				if len(Ciudades_Fulcrum2) > 0 {
 					crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
 				}
@@ -205,6 +208,7 @@ func Consistencia_Eventual() {
 					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores[i].Planeta)
 					if len(Ciudades_Fulcrum2) > 0 {
 						fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
+						fmt.Println("---------------------------------------------")
 						var Ciudades_NoEstan []string
 						var Soldados_NoEstan []int32
 
@@ -225,7 +229,8 @@ func Consistencia_Eventual() {
 
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
 					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("dist21:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
-					fmt.Println("Datos: ", Ciudades_Fulcrum2, Soldados_Fulcrum2)
+					fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
+					fmt.Println("---------------------------------------------")
 					if len(Ciudades_Fulcrum2) > 0 {
 						crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
 					}
@@ -240,9 +245,11 @@ func Consistencia_Eventual() {
 
 		if len(Planetas_Vectores) == 0 {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum3); j++ {
+				fmt.Println("Planeta en Fulcrum3: ", Planetas_Vectores_Fulcrum3[j].Planeta)
 				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
 				Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
-				fmt.Println("Datos: ", Ciudades_Fulcrum3, Soldados_Fulcrum3)
+				fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
+				fmt.Println("---------------------------------------------")
 				if len(Ciudades_Fulcrum3) > 0 {
 					crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
 				}
@@ -266,6 +273,7 @@ func Consistencia_Eventual() {
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores[i].Planeta)
 					if len(Ciudades_Fulcrum3) > 0 {
 						fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
+						fmt.Println("---------------------------------------------")
 						var Ciudades_NoEstan []string
 						var Soldados_NoEstan []int32
 
@@ -285,7 +293,8 @@ func Consistencia_Eventual() {
 				} else {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("dist21:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
-					fmt.Println("Datos: ", Ciudades_Fulcrum3, Soldados_Fulcrum3)
+					fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
+					fmt.Println("---------------------------------------------")
 					if len(Ciudades_Fulcrum3) > 0 {
 						crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
 					}
@@ -311,6 +320,9 @@ func Consistencia_Eventual() {
 			ModificarVector_Fulcrum("dist21:50072", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
 			ModificarVector_Fulcrum("dist21:50073", Planetas_Vectores[i].Planeta, Planetas_Vectores[i].VectorReloj)
 		}
+		fmt.Println("Merge finalizado, se relizará otro en 2 minutos.")
+		fmt.Println("---------------------------------------------")
+		
 	}
 }
 
