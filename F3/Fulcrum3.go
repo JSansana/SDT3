@@ -116,23 +116,32 @@ func actualizar_archivo_planeta(planeta string, ciudad string, comando string) {
 func leer_archivo_planeta(planeta string, ciudad string) int {
 	soldados := -1
 	arch := planeta + ".txt"
-	file, err := os.Open(arch)
-	if err != nil {
-		log.Fatal(err)
+	Existe := false
+	for i := 0; i < len(Planetas_Vectores); i++ {
+		if Planetas_Vectores[i].Planeta == planeta {
+			Existe = true
+		}
 	}
-	defer file.Close()
+	if Existe {
+		file, err := os.Open(arch)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	// optionally, resize scanner's capacity for lines over 64K, see next example
-	for scanner.Scan() {
-		linea_actual := strings.Split(scanner.Text(), " ")
-		//Ciudades = append(Ciudades, linea_actual[1])
-		sold, _ := strconv.Atoi(linea_actual[2])
-		soldados = sold
-	}
+		scanner := bufio.NewScanner(file)
+		// optionally, resize scanner's capacity for lines over 64K, see next example
+		for scanner.Scan() {
+			linea_actual := strings.Split(scanner.Text(), " ")
+			if len(linea_actual) == 3 {
+				sold, _ := strconv.Atoi(linea_actual[2])
+				soldados = sold
+			}
+		}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	return soldados
@@ -246,7 +255,7 @@ func (s *Mos_FulcrumServer) GetSoldados(ctx context.Context, in *pb.Solicitud) (
 	}
 
 	soldiers := leer_archivo_planeta(planetin, ciudadin)
-	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "localhost:50061"}, nil
+	return &pb.LeiaResponse{Soldados: int32(soldiers), Vector: VectoraGuardar, Direccion: "localhost:50063"}, nil
 
 }
 

@@ -87,9 +87,14 @@ func ObtenerCiudades_Central(planetin string) ([]string, []int) {
 	// optionally, resize scanner's capacity for lines over 64K, see next example
 	for scanner.Scan() {
 		linea_actual := strings.Split(scanner.Text(), " ")
-		Ciudades = append(Ciudades, linea_actual[1])
-		sold, _ := strconv.Atoi(linea_actual[2])
-		Soldados = append(Soldados, sold)
+		if len(linea_actual) == 3 {
+			Ciudades = append(Ciudades, linea_actual[1])
+			sold, _ := strconv.Atoi(linea_actual[2])
+			Soldados = append(Soldados, sold)
+		} else {
+			Ciudades = append(Ciudades, "Hola")
+			Soldados = append(Soldados, -1)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -188,9 +193,13 @@ func Consistencia_Eventual() {
 					}
 
 				} else { // Si el planeta no existe en fulcrum 1, pero si en fulcrum 2, entonces se crea el archivo y se agregan las ciudades
+
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
 					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("localhost:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
-					crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
+					fmt.Println("Datos: ", Ciudades_Fulcrum2, Soldados_Fulcrum2)
+					if len(Ciudades_Fulcrum2) > 0 {
+						crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
+					}
 					if len(Ciudades_Fulcrum2) > 1 {
 						for c := 1; c < len(Ciudades_Fulcrum2); c++ {
 							abrir_escribir_archivo(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[c], Soldados_Fulcrum2[c])
@@ -230,7 +239,11 @@ func Consistencia_Eventual() {
 				} else {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
+					fmt.Println("Datos: ", Ciudades_Fulcrum3, Soldados_Fulcrum3)
 					crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
+					if len(Ciudades_Fulcrum3) > 0 {
+						crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
+					}
 					if len(Ciudades_Fulcrum3) > 1 {
 						for c := 1; c < len(Ciudades_Fulcrum3); c++ {
 							abrir_escribir_archivo(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[c], Soldados_Fulcrum3[c])
@@ -283,23 +296,36 @@ func actualizar_archivo_planeta(planeta string, ciudad string, comando string) {
 
 //Función para comprobar que existe una ciudad. Retorna la cantidad de soldados si existe, de caso contrario retorna -1
 func leer_archivo_planeta(planeta string, ciudad string) int {
-	arch := planeta + ".txt"
 	soldados := -1
-
-	input, err := ioutil.ReadFile(arch)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	lines := strings.Split(string(input), "\n")
-
-	for _, line := range lines {
-		if strings.Contains(line, ciudad) {
-			str := strings.Split(line, " ")
-			sold, _ := strconv.Atoi(str[len(str)-1])
-			soldados = sold
+	arch := planeta + ".txt"
+	Existe := false
+	for i := 0; i < len(Planetas_Vectores); i++ {
+		if Planetas_Vectores[i].Planeta == planeta {
+			Existe = true
 		}
 	}
+	if Existe {
+		file, err := os.Open(arch)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		// optionally, resize scanner's capacity for lines over 64K, see next example
+		for scanner.Scan() {
+			linea_actual := strings.Split(scanner.Text(), " ")
+			if len(linea_actual) == 3 {
+				sold, _ := strconv.Atoi(linea_actual[2])
+				soldados = sold
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	return soldados
 }
 

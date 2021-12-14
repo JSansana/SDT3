@@ -26,7 +26,6 @@ func main() {
 	var monotonic_reads [][3]string
 	var planetin string
 	var ciudadin string
-	Contador := 0
 	Bandera := 0
 	Indice := 0
 	choice := 0
@@ -78,14 +77,12 @@ func main() {
 			soldados := r.GetSoldados()
 			vector := r.GetVector()
 			direccionNueva := r.GetDireccion()
-
+			fmt.Println("Direccion asociada: ", direccionNueva)
 			if soldados > -1 {
-				fmt.Println("Doña Leia, hay %d soldados.", soldados)
+				fmt.Println("Doña Leia, hay ", soldados, " soldados.")
 				if Bandera == 0 {
-					monotonic_reads[Contador][0] = planetin
-					monotonic_reads[Contador][1] = arrayToString(vector, ",")
-					monotonic_reads[Contador][2] = direccionNueva
-					Contador = Contador + 1
+					datos := [3]string{planetin, arrayToString(vector, ","), direccionNueva}
+					monotonic_reads = append(monotonic_reads, datos)
 				} else {
 
 					monotonic_reads[Indice][1] = arrayToString(vector, ",")

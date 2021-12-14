@@ -135,6 +135,7 @@ func (s *LeiaToMosServer) GetNumberRebelds(ctx context.Context, in *pb.MessageLe
 	planetin := in.GetPlaneta()
 	ciudadin := in.GetCiudad()
 	Merge := false
+	fmt.Println("VectorLeia: ", vectorLeia)
 
 	//Vectores obtenidos de cada Fulcrum para comparar
 	soldados1, vector1, direccion1 := Conexion_Mos_Fulcrum_Leia(AdressFulcrum1, planetin, ciudadin)
@@ -144,13 +145,17 @@ func (s *LeiaToMosServer) GetNumberRebelds(ctx context.Context, in *pb.MessageLe
 	if reflect.DeepEqual(vector1, vector2) && reflect.DeepEqual(vector2, vector3) {
 		Merge = true
 	}
-
+	fmt.Println("Merge: ", Merge)
 	if vectorLeia[0] == -1 || Merge {
 		rand.Seed(time.Now().UnixNano())
 		min := 50061
 		max := 50063
 		var numero int32 = int32(rand.Intn(max-min+1) + min)
 		dir := "localhost:" + strconv.Itoa(int(numero))
+		fmt.Println("dir: ", dir)
+		fmt.Println("direccion 1: ", direccion1)
+		fmt.Println("direccion 2: ", direccion2)
+		fmt.Println("direccion 3: ", direccion3)
 		if dir == direccion1 {
 			return &pb.LeiaResponse{Soldados: soldados1, Vector: vector1, Direccion: dir}, nil
 

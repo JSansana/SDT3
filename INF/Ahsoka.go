@@ -50,7 +50,7 @@ func Conexion_Fulcrum(direccion string, numero_funcion int, planetin string) ([]
 			}
 			defer conn.Close()
 			c := pb.NewInfoTo_FulcrumClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			comando = comando + strconv.Itoa(nuevo_valor)
 			r, err := c.AddCity(ctx, &pb.MessageINF{Planeta: planetin, Ciudad: ciudadin, Newcity: "Hola", Soldados: int32(nuevo_valor)})
@@ -67,7 +67,7 @@ func Conexion_Fulcrum(direccion string, numero_funcion int, planetin string) ([]
 			}
 			defer conn.Close()
 			c := pb.NewInfoTo_FulcrumClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			r, err := c.AddCity(ctx, &pb.MessageINF{Planeta: planetin, Ciudad: ciudadin, Newcity: "Hola", Soldados: int32(nuevo_valor)})
 			if err != nil {
@@ -96,7 +96,7 @@ func Conexion_Fulcrum(direccion string, numero_funcion int, planetin string) ([]
 		}
 		defer conn.Close()
 		c := pb.NewInfoTo_FulcrumClient(conn)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
 		r, err := c.UpdateName(ctx, &pb.MessageINF{Planeta: planetin, Ciudad: ciudadin, Newcity: nuevo_nombre, Soldados: 0})
 		if err != nil {
@@ -121,7 +121,7 @@ func Conexion_Fulcrum(direccion string, numero_funcion int, planetin string) ([]
 		}
 		defer conn.Close()
 		c := pb.NewInfoTo_FulcrumClient(conn)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
 		r, err := c.UpdateNumber(ctx, &pb.MessageINF{Planeta: planetin, Ciudad: ciudadin, Newcity: "Hola", Soldados: int32(nuevo_valor)})
 		if err != nil {
@@ -141,7 +141,7 @@ func Conexion_Fulcrum(direccion string, numero_funcion int, planetin string) ([]
 		}
 		defer conn.Close()
 		c := pb.NewInfoTo_FulcrumClient(conn)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
 		r, err := c.DeleteCity(ctx, &pb.MessageINF{Planeta: planetin, Ciudad: ciudadin, Newcity: "Hola", Soldados: 0})
 		if err != nil {
@@ -200,7 +200,7 @@ func main() {
 			}
 			defer conn.Close()
 			c := pb.NewInfoToMosClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			//Envía un 1 de solicitud a Broker para recibir la dirección determinada
 			r, err := c.AskAdress(ctx, &pb.Reloj{Vector: vector_reloj, Planeta: planetin})
@@ -254,7 +254,7 @@ func main() {
 			}
 			defer conn.Close()
 			c := pb.NewInfoToMosClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			//Envía un 2 de solicitud a Broker para recibir la dirección determinada
 			r, err := c.AskAdress(ctx, &pb.Reloj{Vector: vector_reloj, Planeta: planetin})
@@ -306,7 +306,7 @@ func main() {
 			}
 			defer conn.Close()
 			c := pb.NewInfoToMosClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			//Envía un 3 de solicitud a Broker para recibir la dirección determinada
 			r, err := c.AskAdress(ctx, &pb.Reloj{Vector: vector_reloj, Planeta: planetin})
@@ -359,7 +359,7 @@ func main() {
 			}
 			defer conn.Close()
 			c := pb.NewInfoToMosClient(conn)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			r, err := c.AskAdress(ctx, &pb.Reloj{Vector: vector_reloj, Planeta: planetin})
 			if err != nil {
