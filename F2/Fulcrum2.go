@@ -75,9 +75,14 @@ func ObtenerCiudades_Central(planetin string) ([]string, []int32) {
 	// optionally, resize scanner's capacity for lines over 64K, see next example
 	for scanner.Scan() {
 		linea_actual := strings.Split(scanner.Text(), " ")
-		Ciudades = append(Ciudades, linea_actual[1])
-		sold, _ := strconv.Atoi(linea_actual[2])
-		Soldados = append(Soldados, int32(sold))
+		if len(linea_actual) == 3 {
+			Ciudades = append(Ciudades, linea_actual[1])
+			sold, _ := strconv.Atoi(linea_actual[2])
+			Soldados = append(Soldados, int32(sold))
+		} else {
+			Ciudades = append(Ciudades, "Hola")
+			Soldados = append(Soldados, -1)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -134,8 +139,10 @@ func leer_archivo_planeta(planeta string, ciudad string) int {
 		for scanner.Scan() {
 			linea_actual := strings.Split(scanner.Text(), " ")
 			if len(linea_actual) == 3 {
-				sold, _ := strconv.Atoi(linea_actual[2])
-				soldados = sold
+				if linea_actual[1] == ciudad {
+					sold, _ := strconv.Atoi(linea_actual[2])
+					soldados = sold
+				}
 			}
 
 		}
@@ -174,7 +181,7 @@ func abrir_escribir_archivo(planeta string, ciudad string, soldados int32) {
 	soldiers := strconv.Itoa(int(soldados))
 	escritura := planeta + " " + ciudad + " " + soldiers + "\n"
 	fmt.Println("Abriendo archivo: ", planeta)
-	var file, err = os.OpenFile(arch, os.O_RDWR, 0644)
+	file, err := os.OpenFile(arch, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -221,6 +228,8 @@ func (s *NodoDominante_NodoServer) AgregarCiudad(ctx context.Context, in *pb.Mes
 
 	if booleano {
 		crear_archivo_planeta(planetin, ciudadin, soldadines)
+		aux := []int32{-1, -1, -1}
+		Planetas_Vectores = append(Planetas_Vectores, PlanetVector{Planeta: planetin, VectorReloj: aux})
 	} else {
 		abrir_escribir_archivo(planetin, ciudadin, soldadines)
 	}

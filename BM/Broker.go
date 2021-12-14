@@ -90,7 +90,6 @@ func Conexion_Mos_Fulcrum_Leia(direccion string, planetin string, ciudadin strin
 
 //Implementación del método definido en proto
 func (s *InfoToMosServer) AskAdress(ctx context.Context, in *pb.Reloj) (*pb.RespuestaMos, error) {
-	fmt.Printf("RECIBIDOOOOOOOOOOOOOOOO")
 	vectorInformante := in.GetVector()
 	planetin := in.GetPlaneta()
 	Merge := false
@@ -100,6 +99,10 @@ func (s *InfoToMosServer) AskAdress(ctx context.Context, in *pb.Reloj) (*pb.Resp
 	vector2 := Conexion_Mos_Fulcrum(AdressFulcrum2, planetin)
 	vector3 := Conexion_Mos_Fulcrum(AdressFulcrum3, planetin)
 
+	fmt.Println("Vector recibido de informante: ", vectorInformante)
+	fmt.Println("Vector recibido de Fulcrum1: ", vector1)
+	fmt.Println("Vector recibido de Fulcrum2: ", vector2)
+	fmt.Println("Vector recibido de Fulcrum3: ", vector3)
 	//Si los tres vectores de reloj son iguales, entonces hubo un merge, entonces la asignación de fulcrum será aleatoria
 	if reflect.DeepEqual(vector1, vector2) && reflect.DeepEqual(vector2, vector3) {
 		Merge = true
@@ -141,7 +144,9 @@ func (s *LeiaToMosServer) GetNumberRebelds(ctx context.Context, in *pb.MessageLe
 	soldados1, vector1, direccion1 := Conexion_Mos_Fulcrum_Leia(AdressFulcrum1, planetin, ciudadin)
 	soldados2, vector2, direccion2 := Conexion_Mos_Fulcrum_Leia(AdressFulcrum2, planetin, ciudadin)
 	soldados3, vector3, direccion3 := Conexion_Mos_Fulcrum_Leia(AdressFulcrum3, planetin, ciudadin)
-
+	fmt.Println("Vector de Fulcrum1: ", vector1)
+	fmt.Println("Vector de Fulcrum2: ", vector2)
+	fmt.Println("Vector de Fulcrum3: ", vector3)
 	if reflect.DeepEqual(vector1, vector2) && reflect.DeepEqual(vector2, vector3) {
 		Merge = true
 	}

@@ -35,6 +35,18 @@ type PlanetVector struct {
 	VectorReloj []int32
 }
 
+func Existe_Planeta(planetin string) int {
+	if len(Planetas_Vectores) == 0 {
+		return -1
+	}
+
+	for i := 0; i < len(Planetas_Vectores); i++ {
+		if Planetas_Vectores[i].Planeta == planetin {
+			return i
+		}
+	}
+	return -1
+}
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -164,10 +176,25 @@ func Consistencia_Eventual() {
 		Planetas_Vectores_Fulcrum3 := ObtenerPlanetas_Fulcrum("localhost:50073")
 		//Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("localhost:50072")
 		//Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073")
-
-		for i := 0; i < len(Planetas_Vectores); i++ {
+		if len(Planetas_Vectores) == 0 {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum2); j++ {
-				if Planetas_Vectores[i].Planeta == Planetas_Vectores_Fulcrum2[j].Planeta {
+				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
+				Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("localhost:50072", Planetas_Vectores_Fulcrum2[j].Planeta)
+				fmt.Println("Datos: ", Ciudades_Fulcrum2, Soldados_Fulcrum2)
+				if len(Ciudades_Fulcrum2) > 0 {
+					crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[0], Soldados_Fulcrum2[0])
+				}
+				if len(Ciudades_Fulcrum2) > 1 {
+					for c := 1; c < len(Ciudades_Fulcrum2); c++ {
+						abrir_escribir_archivo(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[c], Soldados_Fulcrum2[c])
+					}
+				}
+			}
+		} else {
+			for j := 0; j < len(Planetas_Vectores_Fulcrum2); j++ {
+				fmt.Println("Planeta en Fulcrum2: ", Planetas_Vectores_Fulcrum2[j].Planeta)
+				i := Existe_Planeta(Planetas_Vectores_Fulcrum2[j].Planeta)
+				if i > -1 {
 					for c := 0; c < 3; c++ {
 						if Planetas_Vectores[i].VectorReloj[c] < Planetas_Vectores_Fulcrum2[j].VectorReloj[c] {
 							Planetas_Vectores[i].VectorReloj[c] = Planetas_Vectores_Fulcrum2[j].VectorReloj[c]
@@ -176,22 +203,24 @@ func Consistencia_Eventual() {
 					//Se solicitan las ciudades del fulcrum central y del fulcrum 2 para hacer un merge entre ellas
 					Ciudades_Fulcrum1, _ := ObtenerCiudades_Central(Planetas_Vectores[i].Planeta)
 					Ciudades_Fulcrum2, Soldados_Fulcrum2 := ObtenerCiudades_Fulcrum("localhost:50072", Planetas_Vectores[i].Planeta)
-					var Ciudades_NoEstan []string
-					var Soldados_NoEstan []int32
+					if len(Ciudades_Fulcrum2) > 0 {
+						fmt.Println("Ciudades en Fulcrum2: ", Ciudades_Fulcrum2)
+						var Ciudades_NoEstan []string
+						var Soldados_NoEstan []int32
 
-					//se identifican las ciudades que no están en fulcrum1 y se almacenan
-					for k := 0; k < len(Ciudades_Fulcrum2); k++ {
-						if !stringInSlice(Ciudades_Fulcrum2[k], Ciudades_Fulcrum1) {
-							//Se agrega a fulcrum 1 la ciudad que no esté
-							Ciudades_NoEstan = append(Ciudades_NoEstan, Ciudades_Fulcrum2[k])
-							Soldados_NoEstan = append(Soldados_NoEstan, Soldados_Fulcrum2[k])
+						//se identifican las ciudades que no están en fulcrum1 y se almacenan
+						for k := 0; k < len(Ciudades_Fulcrum2); k++ {
+							if !stringInSlice(Ciudades_Fulcrum2[k], Ciudades_Fulcrum1) {
+								//Se agrega a fulcrum 1 la ciudad que no esté
+								Ciudades_NoEstan = append(Ciudades_NoEstan, Ciudades_Fulcrum2[k])
+								Soldados_NoEstan = append(Soldados_NoEstan, Soldados_Fulcrum2[k])
+							}
+						}
+						//se guardan las ciudades que no están al archivo del fulcrum1
+						for l := 0; l < len(Ciudades_NoEstan); l++ {
+							abrir_escribir_archivo(Planetas_Vectores[i].Planeta, Ciudades_NoEstan[l], Soldados_NoEstan[l])
 						}
 					}
-					//se guardan las ciudades que no están al archivo del fulcrum1
-					for l := 0; l < len(Ciudades_NoEstan); l++ {
-						abrir_escribir_archivo(Planetas_Vectores[i].Planeta, Ciudades_NoEstan[l], Soldados_NoEstan[l])
-					}
-
 				} else { // Si el planeta no existe en fulcrum 1, pero si en fulcrum 2, entonces se crea el archivo y se agregan las ciudades
 
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum2[j])
@@ -205,14 +234,29 @@ func Consistencia_Eventual() {
 							abrir_escribir_archivo(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum2[c], Soldados_Fulcrum2[c])
 						}
 					}
-
 				}
 			}
 		}
 
-		for i := 0; i < len(Planetas_Vectores); i++ {
+		if len(Planetas_Vectores) == 0 {
 			for j := 0; j < len(Planetas_Vectores_Fulcrum3); j++ {
-				if Planetas_Vectores[i].Planeta == Planetas_Vectores_Fulcrum3[j].Planeta {
+				Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
+				Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
+				fmt.Println("Datos: ", Ciudades_Fulcrum3, Soldados_Fulcrum3)
+				if len(Ciudades_Fulcrum3) > 0 {
+					crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
+				}
+				if len(Ciudades_Fulcrum3) > 1 {
+					for c := 1; c < len(Ciudades_Fulcrum3); c++ {
+						abrir_escribir_archivo(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[c], Soldados_Fulcrum3[c])
+					}
+				}
+			}
+		} else {
+			for j := 0; j < len(Planetas_Vectores_Fulcrum3); j++ {
+				fmt.Println("Planeta en Fulcrum3: ", Planetas_Vectores_Fulcrum3[j].Planeta)
+				i := Existe_Planeta(Planetas_Vectores_Fulcrum3[j].Planeta)
+				if i != -1 {
 					for c := 0; c < 3; c++ {
 						if Planetas_Vectores[i].VectorReloj[c] < Planetas_Vectores_Fulcrum3[j].VectorReloj[c] {
 							Planetas_Vectores[i].VectorReloj[c] = Planetas_Vectores_Fulcrum3[j].VectorReloj[c]
@@ -220,29 +264,30 @@ func Consistencia_Eventual() {
 					}
 					Ciudades_Fulcrum1, _ := ObtenerCiudades_Central(Planetas_Vectores[i].Planeta)
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073", Planetas_Vectores[i].Planeta)
-					var Ciudades_NoEstan []string
-					var Soldados_NoEstan []int32
+					if len(Ciudades_Fulcrum3) > 0 {
+						fmt.Println("Ciudades en Fulcrum3: ", Ciudades_Fulcrum3)
+						var Ciudades_NoEstan []string
+						var Soldados_NoEstan []int32
 
-					//se identifican las ciudades que no están en fulcrum1 y se almacenan
-					for k := 0; k < len(Ciudades_Fulcrum3); k++ {
-						if !stringInSlice(Ciudades_Fulcrum3[k], Ciudades_Fulcrum1) {
-							//Se agrega a fulcrum 1 la ciudad que no esté
-							Ciudades_NoEstan = append(Ciudades_NoEstan, Ciudades_Fulcrum3[k])
-							Soldados_NoEstan = append(Soldados_NoEstan, Soldados_Fulcrum3[k])
+						//se identifican las ciudades que no están en fulcrum1 y se almacenan
+						for k := 0; k < len(Ciudades_Fulcrum3); k++ {
+							if !stringInSlice(Ciudades_Fulcrum3[k], Ciudades_Fulcrum1) {
+								//Se agrega a fulcrum 1 la ciudad que no esté
+								Ciudades_NoEstan = append(Ciudades_NoEstan, Ciudades_Fulcrum3[k])
+								Soldados_NoEstan = append(Soldados_NoEstan, Soldados_Fulcrum3[k])
+							}
+						}
+						//se guardan las ciudades que no están al archivo del fulcrum1
+						for l := 0; l < len(Ciudades_NoEstan); l++ {
+							abrir_escribir_archivo(Planetas_Vectores[i].Planeta, Ciudades_NoEstan[l], Soldados_NoEstan[l])
 						}
 					}
-					//se guardan las ciudades que no están al archivo del fulcrum1
-					for l := 0; l < len(Ciudades_NoEstan); l++ {
-						abrir_escribir_archivo(Planetas_Vectores[i].Planeta, Ciudades_NoEstan[l], Soldados_NoEstan[l])
-					}
-
 				} else {
 					Planetas_Vectores = append(Planetas_Vectores, Planetas_Vectores_Fulcrum3[j])
 					Ciudades_Fulcrum3, Soldados_Fulcrum3 := ObtenerCiudades_Fulcrum("localhost:50073", Planetas_Vectores_Fulcrum3[j].Planeta)
 					fmt.Println("Datos: ", Ciudades_Fulcrum3, Soldados_Fulcrum3)
-					crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
 					if len(Ciudades_Fulcrum3) > 0 {
-						crear_archivo_planeta(Planetas_Vectores_Fulcrum2[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
+						crear_archivo_planeta(Planetas_Vectores_Fulcrum3[j].Planeta, Ciudades_Fulcrum3[0], Soldados_Fulcrum3[0])
 					}
 					if len(Ciudades_Fulcrum3) > 1 {
 						for c := 1; c < len(Ciudades_Fulcrum3); c++ {
@@ -255,6 +300,7 @@ func Consistencia_Eventual() {
 		for i := 0; i < len(Planetas_Vectores); i++ {
 
 			Ciudades_Fulcrum, Soldados_Fulcrum := ObtenerCiudades_Central(Planetas_Vectores[i].Planeta)
+			fmt.Println(Planetas_Vectores[i].Planeta, Ciudades_Fulcrum)
 			for j := 0; j < len(Ciudades_Fulcrum); j++ {
 
 				AgregarCiudades("localhost:50072", Planetas_Vectores[i].Planeta, Ciudades_Fulcrum[j], Soldados_Fulcrum[j])
@@ -316,8 +362,10 @@ func leer_archivo_planeta(planeta string, ciudad string) int {
 		for scanner.Scan() {
 			linea_actual := strings.Split(scanner.Text(), " ")
 			if len(linea_actual) == 3 {
-				sold, _ := strconv.Atoi(linea_actual[2])
-				soldados = sold
+				if linea_actual[1] == ciudad {
+					sold, _ := strconv.Atoi(linea_actual[2])
+					soldados = sold
+				}
 			}
 		}
 
@@ -354,7 +402,7 @@ func abrir_escribir_archivo(planeta string, ciudad string, soldados int32) {
 	soldiers := strconv.Itoa(int(soldados))
 	escritura := planeta + " " + ciudad + " " + soldiers + "\n"
 	fmt.Println("Abriendo archivo: ", planeta)
-	var file, err = os.OpenFile(arch, os.O_RDWR, 0644)
+	file, err := os.OpenFile(arch, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -423,6 +471,7 @@ func (s *InfoTo_FulcrumServer) AddCity(ctx context.Context, in *pb.MessageINF) (
 
 	if planetaEncontrado {
 		//Si no encuentra la ciudad la agrega
+		fmt.Println("leer_archivo_planeta: ", leer_archivo_planeta(planetin, ciudadin))
 		if leer_archivo_planeta(planetin, ciudadin) < 0 {
 			abrir_escribir_archivo(planetin, ciudadin, soldados)
 			Planetas_Vectores[IndicePlaneta].VectorReloj[0] += 1
